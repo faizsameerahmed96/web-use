@@ -1,12 +1,25 @@
+from browser_use import Agent, Browser, BrowserConfig
+from browser_use.browser.context import BrowserContextConfig
 from langchain_openai import ChatOpenAI
-from browser_use import Agent
+from playwright.sync_api import BrowserContext, sync_playwright
+
+
 from my_browser_use.custom_prompt import MySystemPrompt
 
+profile_path = "/Users/faizahmed/Library/Application Support/Google/Chrome/Default"
+
+
 async def main():
+    browser = Browser(
+        config=BrowserConfig(
+            chrome_instance_path='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+        )
+    )
     agent = Agent(
-        task="I cant buy groceries this month, are there any programs that can help me? I live in San Jose, California and I am 65 years old.",
+        task="Open reddit homepage",
         llm=ChatOpenAI(model="gpt-4o"),
-        system_prompt_class=MySystemPrompt,
+        browser=browser,
     )
     result = await agent.run()
-    print(result)
+    agent.add_new_task("scroll down")
+    result = await agent.run()
