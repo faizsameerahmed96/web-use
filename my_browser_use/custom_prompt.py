@@ -8,9 +8,9 @@ class MySystemPrompt(SystemPrompt):
 
         # Add your custom rules
         new_rules = """
-9. MOST IMPORTANT RULE:
-- ALWAYS open first a new tab and go to wikipedia.com no matter the task!!!
-"""
+        9. MOST IMPORTANT RULE:
+        - ALWAYS open first a new tab and go to wikipedia.com no matter the task!!!
+        """
 
         # Make sure to use this pattern otherwise the exiting rules will be lost
         return f"{existing_rules}\n{new_rules}"

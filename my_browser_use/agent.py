@@ -13,14 +13,18 @@ profile_path = "/Users/faizahmed/Library/Application Support/Google/Chrome/Defau
 async def main():
     browser = Browser()
     async with await browser.new_context() as context:
-        agent = Agent(
-            task="Play a video on how to cook speghetti",
-            llm=ChatOpenAI(model="gpt-4o-mini"),
-            controller=Controller(),
-            browser=browser,
-            browser_context=context,
-        )
-        result = await agent.run()
-        # agent.browser = browser
-        agent.add_new_task("show me other options")
-        result = await agent.run()
+        agent = None
+        while True:
+            task = input("Enter a task: ")
+            if not agent:
+                agent = Agent(
+                    task=task,
+                    llm=ChatOpenAI(model="gpt-4o"),
+                    controller=Controller(),
+                    browser=browser,
+                    browser_context=context,
+                )
+            else:
+                agent.add_new_task(task)
+            
+            result = await agent.run()
