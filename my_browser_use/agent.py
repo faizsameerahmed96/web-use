@@ -14,7 +14,7 @@ async def main():
     browser = Browser()
     async with await browser.new_context() as context:
         agent = Agent(
-            task="Open reddit homepage",
+            task="Play a video on how to cook speghetti",
             llm=ChatOpenAI(model="gpt-4o-mini"),
             controller=Controller(),
             browser=browser,
@@ -22,5 +22,5 @@ async def main():
         )
         result = await agent.run()
         # agent.browser = browser
-        agent.add_new_task("Scroll down")
+        agent.add_new_task("show me other options")
         result = await agent.run()
