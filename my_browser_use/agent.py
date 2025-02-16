@@ -8,6 +8,7 @@ from langchain_openai import ChatOpenAI
 from audio.record_audio import record_audio_and_transcribe
 from audio.record_audio_optimize import wait_for_wakeword
 from my_browser_use.custom_prompt import MySystemPrompt
+import json
 import asyncio
 
 profile_path = "/Users/faizahmed/Library/Application Support/Google/Chrome/Default"
@@ -31,17 +32,18 @@ async def main(message_queue):
     async with await browser.new_context() as context:
         agent = None
         while True:
+            await message_queue.put(json.dumps({"state": "WAITING_FOR_WAKEWORD"}))
             wait_for_wakeword()
-            await message_queue.put("Recording audio")
+            await message_queue.put(json.dumps({"state": "RECORDING_AUDIO"}))
             task = record_audio_and_transcribe()
             print(f"Task: {task}")
+            await message_queue.put(json.dumps({"state": "PERFORMING_TASK"}))
             # task = input("task: ")
-            await message_queue.put("Performing task")
             if not agent:
                 agent = Agent(
                     task=task,
                     generate_gif=False,
-                    llm=ChatOpenAI(model="gpt-4o", temperature=0.2),
+                    llm=ChatOpenAI(model="gpt-4o-mini", temperature=0.2),
                     # llm=ChatOpenAI(model="llama-3.2-90b-vision-preview", temperature=0.2, base_url='https://api.groq.com/openai/v1/', api_key=os.environ.get('GROQ_API_KEY')),
                     controller=controller,
                     browser=browser,

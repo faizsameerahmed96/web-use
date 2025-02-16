@@ -9,16 +9,22 @@ from langchain_openai import ChatOpenAI
 
 from my_browser_use import agent
 
-message_queue = asyncio.Queue()  # Shared queue for websocket messages between async processes
+message_queue = (
+    asyncio.Queue()
+)  # Shared queue for websocket messages between async processes
+
 
 async def process_queue(websocket):
     while True:
         message = await message_queue.get()
-        await websocket.send(json.dumps(message))
+        await websocket.send(message)
+
 
 async def websocket_handler(websocket):
     """Handles WebSocket connections and starts a background task to process messages."""
-    asyncio.create_task(process_queue(websocket))  # Run message processing independently
+    asyncio.create_task(
+        process_queue(websocket)
+    )  # Run message processing independently
     try:
         while True:
             await asyncio.sleep(1)  # Keep connection alive
@@ -31,6 +37,7 @@ async def websocket_server():
     ws_server = await websockets.serve(websocket_handler, "localhost", 8765)
     await ws_server.serve_forever()
 
+
 def start_websocket_thread():
     """Runs the WebSocket server in a separate thread."""
     asyncio.run(websocket_server())
@@ -42,6 +49,7 @@ def start_agent_thread():
 
 
 async def main():
+    await message_queue.put(json.dumps({"state": "INITIAL_STATE"}))
     """Runs agent.main() while WebSocket runs in another thread."""
     # Start WebSocket server in a separate thread
     websocket_thread = threading.Thread(target=start_websocket_thread, daemon=True)

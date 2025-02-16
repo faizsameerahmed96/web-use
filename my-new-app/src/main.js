@@ -12,8 +12,14 @@ if (started) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    maxWidth: 300,
+    maxHeight: 400,
+    maximizable: false,
+    autoHideMenuBar: true,
+    frame: false,
+    fullscreenable: false,
+    opacity: 1,
+    skipTaskbar: true,
     webPreferences: {
       webSecurity: false,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
