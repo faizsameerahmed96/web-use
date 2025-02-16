@@ -9,12 +9,11 @@ profile_path = "/Users/faizahmed/Library/Application Support/Google/Chrome/Defau
 
 controller = Controller()
 
-
 @controller.action(
     "Ask the user for information in case you need some more information on the tasks."
 )
 def ask_human(question: str) -> str:
-    answer = input(f"\n##### QUESTION: {question}\nInput: ")
+    print(f"############ {question}")
     user_input = record_audio_and_transcribe()
     return ActionResult(extracted_content=user_input)
 
@@ -29,8 +28,10 @@ async def main():
                 agent = Agent(
                     task=task,
                     llm=ChatOpenAI(model="gpt-4o", temperature=0.2),
+                    # llm=ChatOpenAI(model="llama-3.2-90b-vision-preview", temperature=0.2, base_url='https://api.groq.com/openai/v1/'),
                     controller=controller,
                     browser=browser,
+                    use_vision=False,                    
                     system_prompt_class=MySystemPrompt,
                     browser_context=context,
                 )
