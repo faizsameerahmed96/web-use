@@ -10,7 +10,7 @@ controller = Controller()
 
 
 @controller.action(
-    "Ask the user for information in case you need some more information on the tasks. Only use this if you are stuck."
+    "Ask the user for information in case you need some more information on the tasks."
 )
 def ask_human(question: str) -> str:
     answer = input(f"\n##### QUESTION: {question}\nInput: ")
@@ -26,7 +26,7 @@ async def main():
             if not agent:
                 agent = Agent(
                     task=task,
-                    llm=ChatOpenAI(model="gpt-4o"),
+                    llm=ChatOpenAI(model="gpt-4o-mini", temperature=0.2),
                     controller=controller,
                     browser=browser,
                     system_prompt_class=MySystemPrompt,

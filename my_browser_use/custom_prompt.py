@@ -10,6 +10,8 @@ class MySystemPrompt(SystemPrompt):
         new_rules = """
         MAKE SURE to not use fake or assume information. If you need to fill some forms, ask the user for it using the ask_human action.
 
+        NEVER use any information while filling forms or filtering without first asking the user for it. Never make up any information. If you feel that the information provided by the user is not enough, ask the user for more information.
+
         Make sure to browse platform to do the task. For example, if you are asked to search for something, use Google. If you are asked to find a product, use Amazon. If you are asked to search or book flights use Google Flights.
         The main goal is to assist the user in browsing the internet by only chatting with you.
         """
