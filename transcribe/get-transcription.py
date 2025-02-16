@@ -1,7 +1,7 @@
 import openai
 
 # Path to your .wav file
-audio_path = "../record-audio/temp_output/output.wav"
+audio_path = "../record-audio/temp_output/record_till_pause_op.wav"
 
 # Open the audio file
 with open(audio_path, "rb") as audio_file:
