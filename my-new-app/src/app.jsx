@@ -55,6 +55,11 @@ const App = () => {
       state.state === "WAITING_FOR_WAKEWORD" ||
       state.state === "INITIAL_STATE"
     ) {
+      let logo_size = 75;
+      if (state.state?.data?.question) {
+        logo_size = 30;
+      }
+
       return (
         <div
           style={{
@@ -65,17 +70,21 @@ const App = () => {
         >
           <div
             style={{
-              width: 75,
-              height: 75,
+              width: logo_size,
+              height: logo_size,
               backgroundColor: "#FFBD59",
               borderRadius: "50%",
               animation: "pulse 1.5s infinite ease-in-out",
             }}
           ></div>
 
+          {state.state?.data?.question && (
+            <h3>Question: {state.state.data.question}</h3>
+          )}
+
           <h2 style={{ textAlign: "center" }}>
-            Say <span style={{ color: "#FFBD59" }}>"BumbleBee"</span> to get
-            started
+            Say <span style={{ color: "#FFBD59" }}>"BumbleBee"</span> to{" "}
+            {state.state?.data?.question ? "answer" : "get started"}
           </h2>
         </div>
       );

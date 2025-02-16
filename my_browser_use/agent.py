@@ -16,19 +16,29 @@ profile_path = "/Users/faizahmed/Library/Application Support/Google/Chrome/Defau
 
 controller = Controller()
 
+g_message_queue = None
 
-# @controller.action(
-#     "Ask the user for information in case you need some more information on the tasks."
-# )
-# def ask_human(question: str) -> str:
-#     print(f"############ {question}")
-#     wait_for_wakeword()
-#     user_input = record_audio_and_transcribe()
-#     # user_input = input(question)
-#     return ActionResult(extracted_content=user_input)
+
+@controller.action(
+    "ask_human - Ask the user a question or for information if required."
+)
+async def ask_human(question: str) -> str:
+    print(f"############ {question}")
+    global g_message_queue
+    print(g_message_queue)
+    if g_message_queue:
+        await g_message_queue.put(
+            json.dumps({"state": "WAITING_FOR_WAKEWORD", "data": {"question": question}})
+        )
+    wait_for_wakeword()
+    user_input = record_audio_and_transcribe()
+    # user_input = input(question)
+    return ActionResult(extracted_content=user_input)
 
 
 async def main(message_queue):
+    global g_message_queue 
+    g_message_queue = message_queue
     browser = Browser()
 
     async with await browser.new_context() as context:
@@ -42,14 +52,28 @@ async def main(message_queue):
             if "scroll down" == re.sub(r"[^A-Za-z0-9 ]+", "", task.lower()):
                 page = await context.get_current_page()
                 await page.evaluate(
-                    'window.scrollBy({ top: window.innerHeight - 100,left: 0,behavior : "smooth"})'
+                    'window.scrollBy({ top: window.innerHeight - 20,left: 0,behavior : "smooth"})'
+                )
+                continue
+
+            if "scroll down a little" == re.sub(r"[^A-Za-z0-9 ]+", "", task.lower()):
+                page = await context.get_current_page()
+                await page.evaluate(
+                    'window.scrollBy({ top: 100,left: 0,behavior : "smooth"})'
+                )
+                continue
+
+            if "scroll up a little" == re.sub(r"[^A-Za-z0-9 ]+", "", task.lower()):
+                page = await context.get_current_page()
+                await page.evaluate(
+                    'window.scrollBy({ top: -100,left: 0,behavior : "smooth"})'
                 )
                 continue
 
             if "scroll up" == re.sub(r"[^A-Za-z0-9 ]+", "", task.lower()):
                 page = await context.get_current_page()
                 await page.evaluate(
-                    'window.scrollBy({ top: -window.innerHeight - 100,left: 0,behavior : "smooth"})'
+                    'window.scrollBy({ top: -window.innerHeight - 20,left: 0,behavior : "smooth"})'
                 )
                 continue
 
@@ -65,7 +89,7 @@ async def main(message_queue):
                 agent = Agent(
                     task=task,
                     generate_gif=False,
-                    llm=ChatOpenAI(model="gpt-4o-mini", temperature=0.2),
+                    llm=ChatOpenAI(model="gpt-4o-mini", temperature=0.1),
                     # llm=ChatOpenAI(model="llama-3.2-90b-vision-preview", temperature=0.2, base_url='https://api.groq.com/openai/v1/', api_key=os.environ.get('GROQ_API_KEY')),
                     controller=controller,
                     browser=browser,
