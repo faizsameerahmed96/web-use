@@ -26,7 +26,7 @@ async def main():
             if not agent:
                 agent = Agent(
                     task=task,
-                    llm=ChatOpenAI(model="gpt-4o-mini", temperature=0.2),
+                    llm=ChatOpenAI(model="gpt-4o", temperature=0.2),
                     controller=controller,
                     browser=browser,
                     system_prompt_class=MySystemPrompt,
