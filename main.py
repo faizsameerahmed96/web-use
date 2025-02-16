@@ -1,11 +1,55 @@
 from dotenv import load_dotenv
-load_dotenv('./.env')
-from my_browser_use import agent
+
+load_dotenv("./.env")
 import asyncio
-
+import json
+import websockets
+import threading
 from langchain_openai import ChatOpenAI
-asyncio.run(agent.main())
 
-# groq_model = ChatOpenAI(model="llama-3.2-90b-vision-preview", temperature=0.2, base_url='https://api.groq.com/openai/v1/', api_key='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')
+from my_browser_use import agent
 
-# print(groq_model.invoke("What is the capital of France?"))
+message_queue = asyncio.Queue()  # Shared queue for websocket messages between async processes
+
+async def process_queue(websocket):
+    while True:
+        message = await message_queue.get()
+        await websocket.send(json.dumps(message))
+
+async def websocket_handler(websocket):
+    """Handles WebSocket connections and starts a background task to process messages."""
+    asyncio.create_task(process_queue(websocket))  # Run message processing independently
+    try:
+        while True:
+            await asyncio.sleep(1)  # Keep connection alive
+    except websockets.exceptions.ConnectionClosed:
+        pass
+
+
+async def websocket_server():
+    """Starts the WebSocket server."""
+    ws_server = await websockets.serve(websocket_handler, "localhost", 8765)
+    await ws_server.serve_forever()
+
+def start_websocket_thread():
+    """Runs the WebSocket server in a separate thread."""
+    asyncio.run(websocket_server())
+
+
+def start_agent_thread():
+    """Runs the agent in a separate thread."""
+    asyncio.run(agent.main(message_queue))
+
+
+async def main():
+    """Runs agent.main() while WebSocket runs in another thread."""
+    # Start WebSocket server in a separate thread
+    websocket_thread = threading.Thread(target=start_websocket_thread, daemon=True)
+    websocket_thread.start()
+
+    # Run the agent process in the main event loop
+    await agent.main(message_queue)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

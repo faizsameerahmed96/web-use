@@ -1,4 +1,5 @@
 import os
+import time
 
 from browser_use import ActionResult, Agent, Browser
 from browser_use.controller.service import Controller
@@ -6,6 +7,7 @@ from langchain_openai import ChatOpenAI
 
 from audio.record_audio import record_audio_and_transcribe
 from my_browser_use.custom_prompt import MySystemPrompt
+import asyncio
 
 profile_path = "/Users/faizahmed/Library/Application Support/Google/Chrome/Default"
 
@@ -22,16 +24,20 @@ def ask_human(question: str) -> str:
     return ActionResult(extracted_content=user_input)
 
 
-async def main():
+async def main(message_queue):
     browser = Browser()
+
     async with await browser.new_context() as context:
         agent = None
         while True:
+            await message_queue.put("Recording audio")
             task = record_audio_and_transcribe()
             # task = input("task: ")
+            await message_queue.put("Performing task")
             if not agent:
                 agent = Agent(
                     task=task,
+                    generate_gif=False,
                     llm=ChatOpenAI(model="gpt-4o", temperature=0.2),
                     # llm=ChatOpenAI(model="llama-3.2-90b-vision-preview", temperature=0.2, base_url='https://api.groq.com/openai/v1/', api_key=os.environ.get('GROQ_API_KEY')),
                     controller=controller,
