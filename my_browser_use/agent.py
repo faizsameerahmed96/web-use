@@ -3,6 +3,7 @@ from browser_use.controller.service import Controller
 from langchain_openai import ChatOpenAI
 
 from my_browser_use.custom_prompt import MySystemPrompt
+from audio.record_audio import record_audio_and_transcribe
 
 profile_path = "/Users/faizahmed/Library/Application Support/Google/Chrome/Default"
 
@@ -14,7 +15,8 @@ controller = Controller()
 )
 def ask_human(question: str) -> str:
     answer = input(f"\n##### QUESTION: {question}\nInput: ")
-    return ActionResult(extracted_content=answer)
+    user_input = record_audio_and_transcribe()
+    return ActionResult(extracted_content=user_input)
 
 
 async def main():
@@ -22,7 +24,7 @@ async def main():
     async with await browser.new_context() as context:
         agent = None
         while True:
-            task = input("Enter a task: ")
+            task = record_audio_and_transcribe()
             if not agent:
                 agent = Agent(
                     task=task,

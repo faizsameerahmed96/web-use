@@ -11,4 +11,6 @@ def transcribe_audio(path: str) -> str:
 
     transcribed_text = transcript.text
 
+    print(transcribed_text)
+
     return transcribed_text
