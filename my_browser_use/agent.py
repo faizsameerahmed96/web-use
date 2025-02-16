@@ -17,8 +17,8 @@ controller = Controller()
 )
 def ask_human(question: str) -> str:
     print(f"############ {question}")
-    # user_input = record_audio_and_transcribe()
-    user_input = input(question)
+    user_input = record_audio_and_transcribe()
+    # user_input = input(question)
     return ActionResult(extracted_content=user_input)
 
 
@@ -27,8 +27,8 @@ async def main():
     async with await browser.new_context() as context:
         agent = None
         while True:
-            # task = record_audio_and_transcribe()
-            task = input("task: ")
+            task = record_audio_and_transcribe()
+            # task = input("task: ")
             if not agent:
                 agent = Agent(
                     task=task,
