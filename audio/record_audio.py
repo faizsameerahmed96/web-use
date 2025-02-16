@@ -7,17 +7,14 @@ chunk = 1024  # Record in chunks of 1024 samples
 sample_format = pyaudio.paInt16  # 16 bits per sample
 channels = 1
 fs = 44100  # Record at 44100 samples per second
-seconds = 3
-filename = "temp_output/output.wav"
 
 chunk = 1024
 sample_format = pyaudio.paInt16
 channels = 1
-fs = 44100
+fs = 22500
 silence_threshold = 1_500  # Silence threshold (RMS value)
 silence_limit = 40  # Number of consecutive silent chunks before stopping
 filename = "temp_output/output.wav"
-
 
 def record_audio_and_transcribe() -> str:
     p = pyaudio.PyAudio()

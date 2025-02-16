@@ -6,6 +6,7 @@ from browser_use.controller.service import Controller
 from langchain_openai import ChatOpenAI
 
 from audio.record_audio import record_audio_and_transcribe
+from audio.record_audio_optimize import wait_for_wakeword
 from my_browser_use.custom_prompt import MySystemPrompt
 import asyncio
 
@@ -30,8 +31,10 @@ async def main(message_queue):
     async with await browser.new_context() as context:
         agent = None
         while True:
+            wait_for_wakeword()
             await message_queue.put("Recording audio")
             task = record_audio_and_transcribe()
+            print(f"Task: {task}")
             # task = input("task: ")
             await message_queue.put("Performing task")
             if not agent:
