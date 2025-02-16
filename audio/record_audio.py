@@ -14,7 +14,7 @@ chunk = 1024
 sample_format = pyaudio.paInt16
 channels = 1
 fs = 44100
-silence_threshold = 100000  # Silence threshold (RMS value)
+silence_threshold = 1_000_000  # Silence threshold (RMS value)
 silence_limit = 100  # Number of consecutive silent chunks before stopping
 filename = "temp_output/output.wav"
 
