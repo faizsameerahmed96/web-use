@@ -25,7 +25,7 @@ const createWindow = () => {
     autoHideMenuBar: true,
     frame: false,
     fullscreenable: false,
-    opacity: 1,
+    opacity: 0.5,
     skipTaskbar: true,
     webPreferences: {
       webSecurity: false,

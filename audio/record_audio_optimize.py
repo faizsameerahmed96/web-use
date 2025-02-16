@@ -7,7 +7,7 @@ import pyaudio
 
 # Initialize OpenAI client
 client = openai.OpenAI(
-    api_key="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"
+    
 )
 
 # Audio recording parameters
@@ -23,7 +23,7 @@ def calculate_rms(audio_data):
 
 
 porcupine = pvporcupine.create(
-    access_key="saK0O0BZWvHmt3EhviUqzQloOWLaw6Leyp06CbRxUM1JdFfnCQtoPA==",
+    access_key="",
     keywords=["bumblebee"],
 )
 
