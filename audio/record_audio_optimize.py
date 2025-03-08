@@ -6,9 +6,7 @@ import pvporcupine
 import pyaudio
 
 # Initialize OpenAI client
-client = openai.OpenAI(
-    
-)
+client = openai.OpenAI()
 
 # Audio recording parameters
 chunk = 512
